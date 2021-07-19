@@ -3,17 +3,25 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>끝말잇기</title>
-	
+    
+    <script type='text/javascript', src="src/player/player.js">
+    function set_name() {
+        var name = document.getElementById('name').value;
+        var p1 = new Player;
+        p1.prototype.name = name;
+        document.getElementById('demo').innerHTML = p1.prototype.name;
+    }
+    </script>
 </head>
 
 
 <body>
 
 <form name="myForm" action="#" onsubmit="return validateForm()" method="post">
-Name: <input type="text" name="fname">
-<input type="submit" value="Submit">
+Name: <input type="text" name="fname", id='name'>
+<button onclick="set_name()">Button</button>
 </form>
-
+<p id='demo'></p>
 </body>
 
 
