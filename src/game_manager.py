@@ -1,6 +1,4 @@
 import pandas as pd
-import time
-from threading import Thread
 
 class GameManager:
     def __init__(self):
@@ -9,6 +7,7 @@ class GameManager:
     def load_dict(self):
         data = pd.read_csv("./kr_korean_utf.csv")
         nouns = data[data['어미'] == '명사']
+        nouns["#NAME?"] = nouns["#NAME?"].str.replace(pat=r'[^\w]', repl=r'', regex=True)
         return nouns
 
     def check_word(self, word):
@@ -20,49 +19,40 @@ class GameManager:
         else:
             return False
 
-    def timer(self, a):
-        start = time.time()
-
-        while True:
-            end = time.time()
-
-            if end - start >= 6:
-                a[0] = False
 
     def game(self, p1, p2):
-        p1_f = [True]
+        p1_f = True
         p2_f = True
-        w1 = ['']
+        w1 = ''
         w2 = ''
+        w_list = []
         while True:
-            th = Thread(target=p1.get_word, args=(w2, w1))
-            th.start()
-        
-            w1 = p1.get_word(w2)
-            
-            th.join()
+            w1 = p1.get_word(w2, w_list)
 
-            if w1 is "FINISH":
-                p1_f[0] = False
+            if w1.lower() == "finish":
+                p1_f = False
                 break   
 
-            if p1_f[0] == False:
+            if p1_f == False:
                 break   
 
-            print(w1[0])
+            print(w1)
 
+            w_list += [w1]
             
-            w2 = p2.get_word(w1[0])
+            w2 = p2.get_word(w1, w_list)
             if w2 is "FINISH":
                 p2_f = False
                 break   
             
             print(w2)
 
+            w_list += [w2]
+
             if p2_f is False:
                 break
 
-        if p1_f[0] == True and p2_f == False:
+        if p1_f == True and p2_f == False:
             print("Player1 won!")
         else:
             print("Player2 won!")
